@@ -1,0 +1,16 @@
+#container {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+html, body {
+  width:  100%;
+  width:auto;
+  height: 100%;
+  margin: 0px;
+}
+canvas {
+  display:block;
+}
