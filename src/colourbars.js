@@ -10,17 +10,23 @@ var COLOUR_PULSE_CONSTANT = 0.04; // colour bar pulse size
 
 var colourPulseSize = 0; // in number of heights
 
+var BAR_POSITIONS = 8;
+
 // add a bar
-function createBar() {
+function createBars() {
+  barAmount = randomInt(COLOURS.length-1)+1;
+
   colourBars.push({
     barPosition: 1,
-    barColour: randomArrayElement(COLOURS)
+    barColour: Math.floor(Math.random()*COLOURS.length),
+    barBooleans: booleanArray(barAmount, COLOURS.length) // which bars are chosen
   });
 }
 
 // colour bar pulse
 function colourPulse() {
   colourPulseSize = COLOUR_PULSE_CONSTANT;
+  barShift();
 }
 
 // make pulse recede
@@ -37,7 +43,7 @@ function barShift() {
   var splicePositions = [];
   for (var i=0; i<colourBars.length; i++) {
     colourBars[i].barPosition++;
-    if (colourBars[i].barPosition == 10) {
+    if (colourBars[i].barPosition == BAR_POSITIONS) {
       splicePositions.push(i);
     }
   }
@@ -48,7 +54,27 @@ function barShift() {
 
 function drawBars(canvas, context) {
   for (var i=0; i<colourBars.length; i++) {
-    context.fillStyle=colourBars[i].barColour;
-    context.fillRect(0, (colourBars[i].barPosition*0.1-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height, canvas.width, (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
+    for (var j=0; j<colourBars[i].barBooleans.length; j++) {
+      context.fillStyle=COLOURS[j];
+      if (colourBars[i].barBooleans[j])
+      context.fillRect(j*(canvas.width/COLOURS.length),
+        (colourBars[i].barPosition*(BAR_Y/(BAR_POSITIONS-1))-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
+        canvas.width/COLOURS.length,
+        (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
+    }
+  }
+}
+
+// destroy bars matching colours on the control bar
+function clearBars() {
+  var splicePositions = [];
+  for (var i=0; i<colourBars.length; i++) {
+    if (colourBars[i].barPosition == BAR_POSITIONS) {
+      splicePositions.push(i);
+    }
+  }
+  for (var j=splicePositions.length-1; j>=0; j--) {
+    if (colourIndices[colourBars[j].barColour])
+      colourBars.splice(splicePositions[j], 1);
   }
 }

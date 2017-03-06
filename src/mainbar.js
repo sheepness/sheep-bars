@@ -11,15 +11,15 @@ var BAR_Y = 0.9; // percentage of page height
 
 // init pulse timer
 function initBar() {
-  pulseTimer = setInterval(pulse, pulseInterval);
+  pulseTimer = setTimeout(pulse, pulseInterval);
 }
 
 // each throb
 function pulse() {
   pulseSize = PULSE_CONSTANT;
   colourPulse();
-  barShift();
-  createBar();
+  createBars();
+  pulseTimer = setTimeout(pulse, pulseInterval);
 }
 
 // make pulse recede

@@ -16,6 +16,8 @@ function init() {
   resizeCanvas();
 
   initBar();
+
+  initControlBar();
 }
 
 // changes stuff every few milliseconds
