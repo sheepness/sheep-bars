@@ -38,18 +38,26 @@ function colourBarTick() {
     colourPulseSize = 0;
 }
 
-// jump down
+// shift down
 function barShift() {
-  var splicePositions = [];
+  correct = true;
+  //var splicePositions = [];
   for (var i=0; i<colourBars.length; i++) {
-    colourBars[i].barPosition++;
     if (colourBars[i].barPosition == BAR_POSITIONS) {
-      splicePositions.push(i);
+      //splicePositions.push(i);
+      for (var j=0; j<COLOURS.length; j++) {
+        if (colourBars[i].barBooleans[j] != colourIndices[j]) {
+          correct = false;
+        }
+      }
+      colourBars.splice(i, 1);
+      correction();
     }
+    colourBars[i].barPosition++;
   }
-  for (var j=splicePositions.length-1; j>=0; j--) {
-    colourBars.splice(splicePositions[j], 1);
-  }
+  //for (var j=splicePositions.length-1; j>=0; j--) {
+    //colourBars.splice(splicePositions[j], 1);
+  //}
 }
 
 function drawBars(canvas, context) {
@@ -58,50 +66,74 @@ function drawBars(canvas, context) {
       context.fillStyle=COLOURS[j];
       if (colourBars[i].barBooleans[j])
       context.fillRect(j*(canvas.width/COLOURS.length),
-        (colourBars[i].barPosition*(BAR_Y/(BAR_POSITIONS-1))-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
+        (colourBars[i].barPosition*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
         canvas.width/COLOURS.length,
         (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
     }
   }
 }
-
-// destroy bars matching colours on the control bar
-function clearBars() {
-  var splicePositions = [];
-  for (var i=0; i<colourBars.length; i++) {
-    if (colourBars[i].barPosition == BAR_POSITIONS) {
-      splicePositions.push(i);
-    }
+;var colourIndices = [];
+function initControlBar() {
+  for (var i=0; i<COLOURS.length; i++) {
+    colourIndices.push(false);
   }
-  for (var j=splicePositions.length-1; j>=0; j--) {
-    if (colourIndices[colourBars[j].barColour])
-      colourBars.splice(splicePositions[j], 1);
+  document.onkeydown = function(event) {
+    e = event.keyCode;
+    if (e == 83) { // s = red
+      colourIndices[0] = true;
+    } else if (e == 68)  { // d = blue
+      colourIndices[1] = true;
+    } else if (e == 74)  { // j = yellow
+      colourIndices[2] = true;
+    } else if (e == 75)  { // k = green
+      colourIndices[3] = true;
+    }
+  };
+  document.onkeyup = function(event) {
+    e = event.keyCode;
+    if (e == 83) { // s = red
+      colourIndices[0] = false;
+    } else if (e == 68)  { // d = blue
+      colourIndices[1] = false;
+    } else if (e == 74)  { // j = yellow
+      colourIndices[2] = false;
+    } else if (e == 75)  { // k = green
+      colourIndices[3] = false;
+    }
+  };
+}
+
+function drawControlBar(canvas, context) {
+  for (var i=0; i<colourIndices.length; i++) {
+    context.fillStyle = COLOURS[i];
+    if (colourIndices[i]) {
+      context.fillRect(i*canvas.width/COLOURS.length, BAR_Y*canvas.height, canvas.width/COLOURS.length, (1-BAR_Y)*canvas.height);
+    }
   }
 }
-;var colourIndices = [false, false, false, false];
-function initControlBar() {
-  document.onkeydown = (function(e) {
-    if (e.keycode == 83) { // s = red
-      colourIndex[0] = true;
-    } else if (e.keycode == 68)  { // d = blue
-      colourIndex[1] = true;
-    } else if (e.keycode == 74)  { // j = yellow
-      colourIndex[2] = true;
-    } else if (e.keycode == 75)  { // k = green
-      colourIndex[3] = true;
-    }
-  });
-  document.onkeyup = (function(e) {
-    if (e.keycode == 83) { // s = red
-      colourIndex[0] = false;
-    } else if (e.keycode == 68)  { // d = blue
-      colourIndex[1] = false;
-    } else if (e.keycode == 74)  { // j = yellow
-      colourIndex[2] = false;
-    } else if (e.keycode == 75)  { // k = green
-      colourIndex[3] = false;
-    }
-  });
+;var correct = true;
+var CORRECT_BORDER_THICKNESS = 0.05;
+var BORDER_FADE_FRAMES = 30;
+var BORDER_INIT_ALPHA = 1;
+var borderAlpha = 0;
+function correction() {
+  if (!correct)
+    borderAlpha = BORDER_INIT_ALPHA;
+}
+function borderTick() {
+  if (borderAlpha <= 0)
+    return;
+
+  borderAlpha -= BORDER_INIT_ALPHA/BORDER_FADE_FRAMES;
+  if (borderAlpha <= 0)
+    borderAlpha = 0;
+}
+function drawCorrect(canvas, context) {
+  context.fillStyle = "#B22222";
+
+  context.globalAlpha = borderAlpha;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.globalAlpha = 1;
 }
 ;var mainTimer = false;
 var FPS = 50;
@@ -120,9 +152,9 @@ function init() {
 
   resizeCanvas();
 
-  initBar();
-
   initControlBar();
+
+  initBar();
 }
 
 // changes stuff every few milliseconds
@@ -135,6 +167,7 @@ function tick() {
 function update() {
   barTick();
   colourBarTick();
+  borderTick();
 }
 // draw stuff
 function render() {
@@ -142,8 +175,10 @@ function render() {
   var context = canvas.getContext("2d");
 
 context.clearRect(0, 0, canvas.width, canvas.height);
+  drawControlBar(canvas, context); // bar that shows which buttons you're pressing down
   drawMainBar(canvas, context); // animate bar
   drawBars(canvas, context); // moving bars
+  drawCorrect(canvas, context);
 }
 ;var pulseSize = 0; // in number of heights
 var pulseTimer = false;
@@ -193,10 +228,10 @@ function booleanArray(truths, arrayLength) { // get an array of boleans with a c
 
   var booleans = [];
   for (var i=0; i<falses; i++) {
-    booleans.push(0);
+    booleans.push(false);
   }
   for (var j=0; j<truths; j++) {
-    booleans.splice(randomInt(arrayLength), 0, 1);
+    booleans.splice(randomInt(arrayLength), 0, true);
   }
   return booleans;
 }

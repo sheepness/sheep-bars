@@ -38,18 +38,26 @@ function colourBarTick() {
     colourPulseSize = 0;
 }
 
-// jump down
+// shift down
 function barShift() {
-  var splicePositions = [];
+  correct = true;
+  //var splicePositions = [];
   for (var i=0; i<colourBars.length; i++) {
-    colourBars[i].barPosition++;
     if (colourBars[i].barPosition == BAR_POSITIONS) {
-      splicePositions.push(i);
+      //splicePositions.push(i);
+      for (var j=0; j<COLOURS.length; j++) {
+        if (colourBars[i].barBooleans[j] != colourIndices[j]) {
+          correct = false;
+        }
+      }
+      colourBars.splice(i, 1);
+      correction();
     }
+    colourBars[i].barPosition++;
   }
-  for (var j=splicePositions.length-1; j>=0; j--) {
-    colourBars.splice(splicePositions[j], 1);
-  }
+  //for (var j=splicePositions.length-1; j>=0; j--) {
+    //colourBars.splice(splicePositions[j], 1);
+  //}
 }
 
 function drawBars(canvas, context) {
@@ -58,23 +66,9 @@ function drawBars(canvas, context) {
       context.fillStyle=COLOURS[j];
       if (colourBars[i].barBooleans[j])
       context.fillRect(j*(canvas.width/COLOURS.length),
-        (colourBars[i].barPosition*(BAR_Y/(BAR_POSITIONS-1))-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
+        (colourBars[i].barPosition*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
         canvas.width/COLOURS.length,
         (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
     }
-  }
-}
-
-// destroy bars matching colours on the control bar
-function clearBars() {
-  var splicePositions = [];
-  for (var i=0; i<colourBars.length; i++) {
-    if (colourBars[i].barPosition == BAR_POSITIONS) {
-      splicePositions.push(i);
-    }
-  }
-  for (var j=splicePositions.length-1; j>=0; j--) {
-    if (colourIndices[colourBars[j].barColour])
-      colourBars.splice(splicePositions[j], 1);
   }
 }

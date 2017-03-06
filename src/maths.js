@@ -8,10 +8,10 @@ function booleanArray(truths, arrayLength) { // get an array of boleans with a c
 
   var booleans = [];
   for (var i=0; i<falses; i++) {
-    booleans.push(0);
+    booleans.push(false);
   }
   for (var j=0; j<truths; j++) {
-    booleans.splice(randomInt(arrayLength), 0, 1);
+    booleans.splice(randomInt(arrayLength), 0, true);
   }
   return booleans;
 }

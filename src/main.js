@@ -15,9 +15,9 @@ function init() {
 
   resizeCanvas();
 
-  initBar();
-
   initControlBar();
+
+  initBar();
 }
 
 // changes stuff every few milliseconds
@@ -30,6 +30,7 @@ function tick() {
 function update() {
   barTick();
   colourBarTick();
+  borderTick();
 }
 // draw stuff
 function render() {
@@ -37,6 +38,8 @@ function render() {
   var context = canvas.getContext("2d");
 
 context.clearRect(0, 0, canvas.width, canvas.height);
+  drawControlBar(canvas, context); // bar that shows which buttons you're pressing down
   drawMainBar(canvas, context); // animate bar
   drawBars(canvas, context); // moving bars
+  drawCorrect(canvas, context);
 }
