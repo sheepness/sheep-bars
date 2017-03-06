@@ -2,7 +2,7 @@ var mainTimer = false;
 var FPS = 50;
 var mainInterval = 1000/FPS;
 
-var bpm = 128;
+var bpm = 60;
 var pulseInterval = 60000/bpm;
 
 var COLOURS = ["red", "blue", "yellow", "green"];
