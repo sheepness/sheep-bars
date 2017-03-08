@@ -19,6 +19,6 @@ function drawCorrect(canvas, context) {
   context.fillStyle = "#B22222";
 
   context.globalAlpha = borderAlpha;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, canvasWidth, canvasHeight);
   context.globalAlpha = 1;
 }

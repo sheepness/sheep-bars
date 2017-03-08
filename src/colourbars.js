@@ -1,7 +1,7 @@
 var colourBars = [];
 var BAR_JUMP_FRAMES = 5; // number of animation frames
 
-var colourPulseRecede = 0.01; // speed of receding back
+var COLOUR_PULSE_FRAMES = 4; // speed of receding back
 
 var COLOUR_BAR_HEIGHT = 0.01; // colour bar size
 
@@ -35,7 +35,7 @@ function colourPulse() {
 // make pulse recede
 function colourBarTick() {
   if (colourPulseSize > 0) {
-    colourPulseSize -= pulseRecede;
+    colourPulseSize -= COLOUR_PULSE_CONSTANT/COLOUR_PULSE_FRAMES;
   }
   if (colourPulseSize < 0)
     colourPulseSize = 0;
@@ -83,10 +83,10 @@ function drawBars(canvas, context) {
     for (var j=0; j<colourBars[i].barBooleans.length; j++) {
       context.fillStyle=COLOURS[j];
       if (colourBars[i].barBooleans[j])
-      context.fillRect(j*(canvas.width/COLOURS.length),
-        ((colourBars[i].barPosition-colourBars[i].barJumpDisplacement/BAR_JUMP_FRAMES)*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
-        canvas.width/COLOURS.length,
-        (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
+      context.fillRect(j*(canvasWidth/COLOURS.length),
+        ((colourBars[i].barPosition-colourBars[i].barJumpDisplacement/BAR_JUMP_FRAMES)*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvasHeight,
+        canvasWidth/COLOURS.length,
+        (COLOUR_BAR_HEIGHT+colourPulseSize)*canvasHeight);
     }
   }
 }

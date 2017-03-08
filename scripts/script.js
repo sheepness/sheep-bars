@@ -1,7 +1,7 @@
 var colourBars = [];
 var BAR_JUMP_FRAMES = 5; // number of animation frames
 
-var colourPulseRecede = 0.01; // speed of receding back
+var COLOUR_PULSE_FRAMES = 4; // speed of receding back
 
 var COLOUR_BAR_HEIGHT = 0.01; // colour bar size
 
@@ -35,7 +35,7 @@ function colourPulse() {
 // make pulse recede
 function colourBarTick() {
   if (colourPulseSize > 0) {
-    colourPulseSize -= pulseRecede;
+    colourPulseSize -= COLOUR_PULSE_CONSTANT/COLOUR_PULSE_FRAMES;
   }
   if (colourPulseSize < 0)
     colourPulseSize = 0;
@@ -83,10 +83,10 @@ function drawBars(canvas, context) {
     for (var j=0; j<colourBars[i].barBooleans.length; j++) {
       context.fillStyle=COLOURS[j];
       if (colourBars[i].barBooleans[j])
-      context.fillRect(j*(canvas.width/COLOURS.length),
-        ((colourBars[i].barPosition-colourBars[i].barJumpDisplacement/BAR_JUMP_FRAMES)*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvas.height,
-        canvas.width/COLOURS.length,
-        (COLOUR_BAR_HEIGHT+colourPulseSize)*canvas.height);
+      context.fillRect(j*(canvasWidth/COLOURS.length),
+        ((colourBars[i].barPosition-colourBars[i].barJumpDisplacement/BAR_JUMP_FRAMES)*(BAR_Y/BAR_POSITIONS)-COLOUR_BAR_HEIGHT/2-colourPulseSize/2)*canvasHeight,
+        canvasWidth/COLOURS.length,
+        (COLOUR_BAR_HEIGHT+colourPulseSize)*canvasHeight);
     }
   }
 }
@@ -125,7 +125,7 @@ function drawControlBar(canvas, context) {
   for (var i=0; i<colourIndices.length; i++) {
     context.fillStyle = COLOURS[i];
     if (colourIndices[i]) {
-      context.fillRect(i*canvas.width/COLOURS.length, BAR_Y*canvas.height, canvas.width/COLOURS.length, (1-BAR_Y)*canvas.height);
+      context.fillRect(i*canvasWidth/COLOURS.length, BAR_Y*canvasHeight, canvasWidth/COLOURS.length, (1-BAR_Y)*canvasHeight);
     }
   }
 }
@@ -150,14 +150,14 @@ function drawCorrect(canvas, context) {
   context.fillStyle = "#B22222";
 
   context.globalAlpha = borderAlpha;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, canvasWidth, canvasHeight);
   context.globalAlpha = 1;
 }
 ;var mainTimer = false;
 var FPS = 50;
 var mainInterval = 1000/FPS;
 
-var bpm = 60;
+var bpm = 90;
 var pulseInterval = 60000/bpm;
 
 var COLOURS = ["red", "blue", "yellow", "green"];
@@ -170,8 +170,6 @@ function init() {
   mainTimer = setInterval(tick, mainInterval);
   var drawArea = document.getElementById("barCanvas");
   var graphics = drawArea.getContext("2d");
-
-  resizeCanvas();
 
   initControlBar();
 
@@ -190,26 +188,30 @@ function update() {
   colourBarTick();
   borderTick();
   particleTick();
+  percentTick();
 }
 // draw stuff
 function render() {
   var canvas = document.getElementById("barCanvas");
   var context = canvas.getContext("2d");
 
-  canvasWidth = canvas.width;
-  canvasHeight = canvas.height;
+  context.save();
 
-context.clearRect(0, 0, canvas.width, canvas.height);
+  resizeCanvas(canvas, context);
+
+context.clearRect(0, 0, canvasWidth, canvasHeight);
   drawControlBar(canvas, context); // bar that shows which buttons you're pressing down
   drawMainBar(canvas, context); // animate bar
   drawBars(canvas, context); // moving bars
   drawCorrect(canvas, context);
   drawParticles(canvas, context);
+
+  context.restore();
 }
 ;var pulseSize = 0; // in number of heights
 var pulseTimer = false;
 
-var pulseRecede = 0.01; // speed of receding back
+var PULSE_FRAMES = 4; // speed of receding back
 
 var PULSE_CONSTANT = 0.04; // main bar pulse size
 
@@ -227,13 +229,14 @@ function pulse() {
   pulseSize = PULSE_CONSTANT;
   colourPulse();
   createBars();
+  percentPulse();
   pulseTimer = setTimeout(pulse, pulseInterval);
 }
 
 // make pulse recede
 function barTick() {
   if (pulseSize > 0) {
-    pulseSize -= pulseRecede;
+    pulseSize -= PULSE_CONSTANT/PULSE_FRAMES;
   }
   if (pulseSize < 0)
     pulseSize = 0;
@@ -242,8 +245,8 @@ function barTick() {
 // draw bottom bar
 function drawMainBar(canvas, context) {
 context.fillStyle="#000000";
-  context.fillRect(0, (BAR_Y-BAR_HEIGHT/2-pulseSize/2)*canvas.height, canvas.width, (BAR_HEIGHT+pulseSize)*canvas.height);
-  context.fillRect(0, (BAR_Y/BAR_POSITIONS-BAR_HEIGHT/2-pulseSize/2)*canvas.height, canvas.width, (BAR_HEIGHT+pulseSize)*canvas.height);
+  context.fillRect(0, (BAR_Y-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);
+  context.fillRect(0, (BAR_Y/BAR_POSITIONS-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);
 }
 ;function randomInt(number) { // pick a random integer
   return Math.floor(Math.random()*number);
@@ -309,12 +312,12 @@ function particleTick() {
 }
 
 function moveParticle(particle, canvas) {
-  particle.x += particle.travelSpeed*Math.sin(particle.angle)*canvas.width;
-  particle.y += particle.travelSpeed*Math.cos(particle.angle)*canvas.height;
+  particle.x += particle.travelSpeed*Math.sin(particle.angle)*canvasWidth;
+  particle.y += particle.travelSpeed*Math.cos(particle.angle)*canvasHeight;
 }
 
 function drawParticles(canvas, context) {
-  var edgeLength = canvas.height*PARTICLE_EDGE_HEIGHT;
+  var edgeLength = canvasHeight*PARTICLE_EDGE_HEIGHT;
   for (var i=0; i<particles.length; i++) {
     moveParticle(particles[i], canvas);
     context.save();
@@ -328,16 +331,37 @@ function drawParticles(canvas, context) {
   context.restore();
   context.globalAlpha = 1;
 }
-;function resizeCanvas(){
-  var drawArea = document.getElementById("barCanvas");
-
-  fitToContainer(drawArea);
+;var percent = 100;
+var PERCENT_PULSE = 120;
+var PERCENT_FRAMES = 8;
+function resizeCanvas(canvas, context){
+  fitToContainer(canvas, context);
 }
 
-  function fitToContainer(canvas){
-    canvas.style.width='100%';
-    canvas.style.height='100%';
+function percentPulse() {
+  percent = PERCENT_PULSE;
+}
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+function percentTick() {
+  if (percent > 100) {
+    percent -= (PERCENT_PULSE-100)/PERCENT_FRAMES;
+    if (percent <= 100)
+      percent = 100;
   }
+}
+
+function fitToContainer(canvas, context) {
+  canvas.style.width="100%";
+  canvas.style.height="100%";
+
+  w = canvas.offsetWidth;
+  h = canvas.offsetHeight;
+
+  canvas.width = w;
+  canvas.height = h;
+
+  canvasWidth = w*percent/100;
+  canvasHeight = h*percent/100;
+
+  context.translate(-(percent-100)*w/200, -(percent-100)*h/200);
+}

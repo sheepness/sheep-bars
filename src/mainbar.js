@@ -1,7 +1,7 @@
 var pulseSize = 0; // in number of heights
 var pulseTimer = false;
 
-var pulseRecede = 0.01; // speed of receding back
+var PULSE_FRAMES = 4; // speed of receding back
 
 var PULSE_CONSTANT = 0.04; // main bar pulse size
 
@@ -19,13 +19,14 @@ function pulse() {
   pulseSize = PULSE_CONSTANT;
   colourPulse();
   createBars();
+  percentPulse();
   pulseTimer = setTimeout(pulse, pulseInterval);
 }
 
 // make pulse recede
 function barTick() {
   if (pulseSize > 0) {
-    pulseSize -= pulseRecede;
+    pulseSize -= PULSE_CONSTANT/PULSE_FRAMES;
   }
   if (pulseSize < 0)
     pulseSize = 0;
@@ -34,6 +35,6 @@ function barTick() {
 // draw bottom bar
 function drawMainBar(canvas, context) {
 context.fillStyle="#000000";
-  context.fillRect(0, (BAR_Y-BAR_HEIGHT/2-pulseSize/2)*canvas.height, canvas.width, (BAR_HEIGHT+pulseSize)*canvas.height);
-  context.fillRect(0, (BAR_Y/BAR_POSITIONS-BAR_HEIGHT/2-pulseSize/2)*canvas.height, canvas.width, (BAR_HEIGHT+pulseSize)*canvas.height);
+  context.fillRect(0, (BAR_Y-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);
+  context.fillRect(0, (BAR_Y/BAR_POSITIONS-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);
 }

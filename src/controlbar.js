@@ -33,7 +33,7 @@ function drawControlBar(canvas, context) {
   for (var i=0; i<colourIndices.length; i++) {
     context.fillStyle = COLOURS[i];
     if (colourIndices[i]) {
-      context.fillRect(i*canvas.width/COLOURS.length, BAR_Y*canvas.height, canvas.width/COLOURS.length, (1-BAR_Y)*canvas.height);
+      context.fillRect(i*canvasWidth/COLOURS.length, BAR_Y*canvasHeight, canvasWidth/COLOURS.length, (1-BAR_Y)*canvasHeight);
     }
   }
 }

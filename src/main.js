@@ -2,7 +2,7 @@ var mainTimer = false;
 var FPS = 50;
 var mainInterval = 1000/FPS;
 
-var bpm = 60;
+var bpm = 90;
 var pulseInterval = 60000/bpm;
 
 var COLOURS = ["red", "blue", "yellow", "green"];
@@ -15,8 +15,6 @@ function init() {
   mainTimer = setInterval(tick, mainInterval);
   var drawArea = document.getElementById("barCanvas");
   var graphics = drawArea.getContext("2d");
-
-  resizeCanvas();
 
   initControlBar();
 
@@ -35,19 +33,23 @@ function update() {
   colourBarTick();
   borderTick();
   particleTick();
+  percentTick();
 }
 // draw stuff
 function render() {
   var canvas = document.getElementById("barCanvas");
   var context = canvas.getContext("2d");
 
-  canvasWidth = canvas.width;
-  canvasHeight = canvas.height;
+  context.save();
 
-context.clearRect(0, 0, canvas.width, canvas.height);
+  resizeCanvas(canvas, context);
+
+context.clearRect(0, 0, canvasWidth, canvasHeight);
   drawControlBar(canvas, context); // bar that shows which buttons you're pressing down
   drawMainBar(canvas, context); // animate bar
   drawBars(canvas, context); // moving bars
   drawCorrect(canvas, context);
   drawParticles(canvas, context);
+
+  context.restore();
 }

@@ -28,12 +28,12 @@ function particleTick() {
 }
 
 function moveParticle(particle, canvas) {
-  particle.x += particle.travelSpeed*Math.sin(particle.angle)*canvas.width;
-  particle.y += particle.travelSpeed*Math.cos(particle.angle)*canvas.height;
+  particle.x += particle.travelSpeed*Math.sin(particle.angle)*canvasWidth;
+  particle.y += particle.travelSpeed*Math.cos(particle.angle)*canvasHeight;
 }
 
 function drawParticles(canvas, context) {
-  var edgeLength = canvas.height*PARTICLE_EDGE_HEIGHT;
+  var edgeLength = canvasHeight*PARTICLE_EDGE_HEIGHT;
   for (var i=0; i<particles.length; i++) {
     moveParticle(particles[i], canvas);
     context.save();
