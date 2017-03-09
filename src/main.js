@@ -10,6 +10,13 @@ var COLOURS = ["red", "blue", "yellow", "green"];
 var canvasWidth = 0;
 var canvasHeight = 0;
 
+var BAR_FADE_SCORE = 10; // when to start fading
+var BAR_FADE_END_SCORE = 100; // when to stop fading
+var minimumFadeAge = 69; // minimum age of bar that is fading
+var BAR_FADE_MAXIMUM = pulseInterval*(BAR_POSITIONS-2)/mainInterval;
+var BAR_FADE_MINIMUM = pulseInterval*(BAR_POSITIONS/2-1)/mainInterval;
+var BAR_FADE_FRAMES = 50;
+
 // initialise stuff
 function init() {
   mainTimer = setInterval(tick, mainInterval);
@@ -45,11 +52,13 @@ function render() {
   resizeCanvas(canvas, context);
 
 context.clearRect(0, 0, canvasWidth, canvasHeight);
-  drawControlBar(canvas, context); // bar that shows which buttons you're pressing down
-  drawMainBar(canvas, context); // animate bar
-  drawBars(canvas, context); // moving bars
-  drawCorrect(canvas, context);
-  drawParticles(canvas, context);
+  drawControlBar(context); // bar that shows which buttons you're pressing down
+  drawMainBar(context); // animate bar
+  drawBars(context); // moving bars
+  drawCorrect(context);
+  drawParticles(context);
+  drawScore(context);
+  drawRules(context);
 
   context.restore();
 }

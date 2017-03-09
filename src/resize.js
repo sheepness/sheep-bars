@@ -1,17 +1,19 @@
 var percent = 100;
-var PERCENT_PULSE = 120;
-var PERCENT_FRAMES = 8;
+var percent_pulse = 100;
+var PERCENT_FRAMES = 8; // pulse animation frame count
+var PERCENT_MAX = 150; // max size pulse
+var PERCENT_INCREASE = 1; // pulse increase per score
 function resizeCanvas(canvas, context){
   fitToContainer(canvas, context);
 }
 
 function percentPulse() {
-  percent = PERCENT_PULSE;
+  percent = percent_pulse;
 }
 
 function percentTick() {
   if (percent > 100) {
-    percent -= (PERCENT_PULSE-100)/PERCENT_FRAMES;
+    percent -= (percent_pulse-100)/PERCENT_FRAMES;
     if (percent <= 100)
       percent = 100;
   }

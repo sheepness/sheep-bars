@@ -33,7 +33,7 @@ function barTick() {
 }
 
 // draw bottom bar
-function drawMainBar(canvas, context) {
+function drawMainBar(context) {
 context.fillStyle="#000000";
   context.fillRect(0, (BAR_Y-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);
   context.fillRect(0, (BAR_Y/BAR_POSITIONS-BAR_HEIGHT/2-pulseSize/2)*canvasHeight, canvasWidth, (BAR_HEIGHT+pulseSize)*canvasHeight);

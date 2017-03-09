@@ -21,7 +21,7 @@ function sortNumber(a,b) {
 }
 
 function groupSplice(array, splicePositions) {
-  if (array.length>splicePositions.length)
+  if (array.length<splicePositions.length)
     return;
 
   if (splicePositions.length===0)
@@ -31,4 +31,25 @@ function groupSplice(array, splicePositions) {
   for (var k=splicePositions.length-1; k>=0; k--) {
     array.splice(splicePositions[k], 1);
   }
+}
+
+function increaseIfPossible(toIncrease, increment, maximum) {
+  if (toIncrease >= maximum)
+    return toIncrease;
+
+  increased = toIncrease + increment;
+  if (increased >= maximum)
+    increased = maximum;
+
+  return increased;
+}
+
+function decreaseIfPossible(toDecrease, decrement, minimum) {
+  if (toDecrease <= minimum)
+    return toDecrease;
+
+  decreased = toDecrease - decrement;
+  if (decreased <= minimum)
+    decreased = minimum;
+  return decreased;
 }

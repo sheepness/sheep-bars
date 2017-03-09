@@ -1,5 +1,5 @@
 var PARTICLE_EDGE_HEIGHT = 0.02;
-var PARTICLE_LIFESPAN = 20;
+var PARTICLE_LIFESPAN = 50;
 var PARTICLE_RELATIVE_SPEED = 1/6; // number of edge lengths per tick
 
 var particles = [];
@@ -27,15 +27,15 @@ function particleTick() {
   groupSplice(particles, deadParticles);
 }
 
-function moveParticle(particle, canvas) {
+function moveParticle(particle) {
   particle.x += particle.travelSpeed*Math.sin(particle.angle)*canvasWidth;
   particle.y += particle.travelSpeed*Math.cos(particle.angle)*canvasHeight;
 }
 
-function drawParticles(canvas, context) {
+function drawParticles(context) {
   var edgeLength = canvasHeight*PARTICLE_EDGE_HEIGHT;
   for (var i=0; i<particles.length; i++) {
-    moveParticle(particles[i], canvas);
+    moveParticle(particles[i]);
     context.save();
     context.translate(particles[i].x+edgeLength/2, particles[i].y+edgeLength/2);
     context.rotate(particles[i].angle);

@@ -29,11 +29,23 @@ function initControlBar() {
   };
 }
 
-function drawControlBar(canvas, context) {
+function drawControlBar(context) {
+  var controlLetters = ["S","D","J","K"];
+  context.fillStyle = "white";
+  context.fillRect(0, BAR_Y*canvasHeight, canvasWidth, (1-BAR_Y)*canvasHeight);
   for (var i=0; i<colourIndices.length; i++) {
     context.fillStyle = COLOURS[i];
     if (colourIndices[i]) {
       context.fillRect(i*canvasWidth/COLOURS.length, BAR_Y*canvasHeight, canvasWidth/COLOURS.length, (1-BAR_Y)*canvasHeight);
     }
+    context.fillStyle = "black";
+    context.beginPath();
+    context.rect(i*canvasWidth/COLOURS.length, BAR_Y*canvasHeight, canvasWidth/COLOURS.length, (1-BAR_Y)*canvasHeight);
+    context.stroke();
+    context.font = "30px Arial";
+    context.textAlign="center";
+    context.textBaseline = "middle";
+    context.fillText(controlLetters[i], i*canvasWidth/COLOURS.length+canvasWidth/COLOURS.length/2, BAR_Y*canvasHeight+(1-BAR_Y)*canvasHeight/2);
+    context.textBaseline = "alphabetic";
   }
 }
